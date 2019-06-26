@@ -1,0 +1,11 @@
+{
+  "name": "estate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/ykavras/estate.git",
+  "author": "ykavras <ykavras@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "pannellum": "^2.4.1"
+  }
+}

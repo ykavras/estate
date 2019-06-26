@@ -1,0 +1,20 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$ouJ6M54pVgt1$8U6m0tFtEmSln36daEhhWF/HoX2rannorb9DaYtjWSw=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "ykavras",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-06-26T20:07:15.808Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
