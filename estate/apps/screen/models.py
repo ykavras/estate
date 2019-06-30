@@ -1,28 +1,8 @@
 from django.db import models
-from django.contrib.auth import get_user_model
-from django.urls import reverse_lazy
-
-User = get_user_model()
-
-
-class Panorama(models.Model):
-    name = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='panoramas')
-    fade_duration = models.PositiveSmallIntegerField(verbose_name='Karartma Süresi(sn)')
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse_lazy('screen:panorama-detail', kwargs={'pk':self.pk})
-
-    class Meta:
-        verbose_name = 'Panorama'
-        verbose_name_plural = 'Panoramas'
 
 
 class Screen(models.Model):
-    panorama = models.ForeignKey(Panorama,on_delete=models.CASCADE, related_name='screens')
+    advert = models.ForeignKey('advert.Advert', on_delete=models.CASCADE, related_name='screens')
     name = models.CharField(verbose_name='Screen ID', max_length=50)
     title = models.CharField(verbose_name='title', max_length=255)
     hfov = models.FloatField(verbose_name='hfov')
