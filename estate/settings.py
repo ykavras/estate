@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'estate.apps.advert',
     'estate.apps.core',
     'estate.apps.screen',
+
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

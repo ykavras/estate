@@ -7,6 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'', include('estate.apps.core.urls', namespace='core')),
     path(r'', include('estate.apps.screen.urls', namespace='screen')),
+    path(r'api/', include('estate.api.urls', namespace='api')),
+    path(r'api-auth/', include('rest_framework.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
