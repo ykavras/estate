@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -13,7 +14,7 @@ class Panorama(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return ''
+        return reverse_lazy('screen:panorama-detail', kwargs={'pk':self.pk})
 
     class Meta:
         verbose_name = 'Panorama'
