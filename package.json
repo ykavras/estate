@@ -6,6 +6,9 @@
   "author": "ykavras <ykavras@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "pannellum": "^2.4.1"
+    "alertify": "^0.3.0",
+    "install": "^0.12.2",
+    "pannellum": "^2.4.1",
+    "react-dev-utils": "^9.0.1"
   }
 }

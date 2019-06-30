@@ -3,56 +3,16 @@
 
     <div id="panorama"></div>
 
+    <div id="addLink">
+        <p>Linki Ekle</p>
+        <div class="answer">
+            <span class="no">No</span>
+            <span class="yes">Yes</span>
+        </div>
+    </div>
+
 {% endblock %}
 {% block Scripts %}
-    <script>
-        pannellum.viewer('panorama', {
-            "autoLoad": true,
-            "showZoomCtrl": false,
-            "showFullscreenCtrl": false,
-            "preview": true,
-            "default": {
-                "firstScene": "circle",
-                "sceneFadeDuration": 1000,
-            },
-            "scenes": {
-                "circle": {
-                    "title": "Mason Circle",
-                    "hfov": 110,
-                    "pitch": -3,
-                    "yaw": 117,
-                    "type": "equirectangular",
-                    "panorama": "https://pannellum.org/images/alma.jpg",
-                    "hotSpots": [
-                        {
-                            "pitch": -2.1,
-                            "yaw": 132.9,
-                            "type": "scene",
-                            "text": "Spring House or Dairy",
-                            "sceneId": "house"
-                        }
-                    ]
-                },
-                "house": {
-                    "title": "Spring House or Dairy",
-                    "hfov": 110,
-                    "pitch": -3,
-                    "yaw": 5,
-                    "type": "equirectangular",
-                    "panorama": "https://pannellum.org/images/jfk.jpg",
-                    "hotSpots": [
-                        {
-                            "pitch": -0.6,
-                            "yaw": 37.1,
-                            "type": "scene",
-                            "text": "Mason Circle",
-                            "sceneId": "circle",
-                            "targetYaw": -23,
-                            "targetPitch": 2
-                        }
-                    ]
-                }
-            }
-        });
-    </script>
+    <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/addLink.js' %}"></script>
 {% endblock %}
