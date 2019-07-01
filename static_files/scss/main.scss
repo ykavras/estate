@@ -1,9 +1,10 @@
+$Poppins: 'Poppins', sans-serif;
+
 html, body {
   height: auto;
   min-height: 100vh;
+  font-family: $Poppins;
 }
-
-$Poppins: 'Poppins', sans-serif;
 
 #panorama {
   height: 100vh;
@@ -55,60 +56,6 @@ $Poppins: 'Poppins', sans-serif;
 
     &:hover {
       opacity: .6;
-    }
-  }
-}
-
-.alertify-dialog {
-  background-color: rgba(255, 255, 255, .85);
-  border-radius: 5px;
-  text-align: center;
-  font-family: $Poppins;
-  width: 300px;
-  margin: auto;
-
-  p {
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .alertify-text-wrapper {
-    padding-top: 10px;
-  }
-
-  input {
-    border: none;
-    padding: 4px;
-    border-radius: 5px;
-    outline: none;
-  }
-
-  #alertify-resetFocus {
-    display: none;
-  }
-
-  .alertify-buttons {
-    display: flex;
-    justify-content: space-between;
-
-    * {
-      flex: 1;
-      border: none;
-      background-color: rgba(255, 255, 255, .85);
-      font-size: 14px;
-      color: black;
-      text-decoration: none;
-      line-height: 1.2;
-      padding: 10px 0;
-      -webkit-transition: .4s ease;
-      -moz-transition: .4s ease;
-      -ms-transition: .4s ease;
-      -o-transition: .4s ease;
-      transition: .4s ease;
-
-      &:hover {
-        opacity: .5;
-      }
     }
   }
 }
