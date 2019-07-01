@@ -1,5 +1,4 @@
 Django==2.2.2
-django-extra-fields==1.2.2
 djangorestframework==3.9.4
 Pillow==6.0.0
 pytz==2019.1
