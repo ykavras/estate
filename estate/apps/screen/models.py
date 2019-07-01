@@ -25,12 +25,15 @@ class Screen(models.Model):
 
 
 class HotSpot(models.Model):
-    type = (('info', 'info'), ('scene', 'scene'))
+    type_choices = (('info', 'info'), ('scene', 'scene'))
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE, related_name='hotspots')
-    text = models.CharField(max_length=255)
     pitch = models.FloatField()
     yaw = models.FloatField()
-    url = models.URLField(null=True, blank=True)
+    type = models.CharField(verbose_name='Types',max_length=5, choices=type_choices)
+    text = models.CharField(max_length=255, null=True, blank=True, help_text='If type is info fill here')
+    screenid = models.CharField(verbose_name='Screen Id', max_length=255, null=True, blank=True,
+                                 help_text='If type is screen fill here')
+    url = models.URLField(null=True, blank=True, help_text='If type is info then you may give link')
 
     def __str__(self):
         return self.text
