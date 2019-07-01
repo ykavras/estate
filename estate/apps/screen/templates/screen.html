@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load staticfiles %}
 {% block App %}
     <div class="container">
-        <form class="bg-light pl-4 pr-4" action="/api/screen/" enctype="multipart/form-data" method="post">
+        <form id="screen-add" class="bg-light pl-4 pr-4" enctype="multipart/form-data" method="post">
             <p class="h2 pt-4 pb-4 text-center">Screen Add</p>
             {% csrf_token %}
             <div class="form-group">
@@ -41,4 +41,26 @@
         </form>
     </div>
 {% endblock %}
-{% block Scripts %}{% endblock %}
+{% block Scripts %}
+    <script type="text/javascript">
+        $('#screen-add').on('submit', function (e) {
+            e.preventDefault();
+            const data = new FormData(this);
+            $.ajax({
+                method: 'POST',
+                url: '/api/screen/',
+                data,
+                enctype: 'multipart/form-data',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        });
+    </script>
+{% endblock %}
