@@ -3,4 +3,6 @@ from .views import *
 
 app_name = 'screen'
 
-urlpatterns = []
+urlpatterns = [
+    path('', screen, name='screen'),
+]

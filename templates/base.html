@@ -1,20 +1,21 @@
 {% load staticfiles %}<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Estate</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'alertify/themes/alertify.core.css' %}"/>
     <link rel="stylesheet" href="{% static 'pannellum/src/css/pannellum.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 {% block App %}{% endblock %}
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="{% static 'jquery/dist/jquery.slim.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'pannellum/src/js/pannellum.js' %}"></script>
 <script type="text/javascript" src="{% static 'pannellum/src/js/libpannellum.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
 {% block Scripts %}{% endblock %}
 </body>
 </html>
