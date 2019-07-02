@@ -3,13 +3,13 @@ from django.db import models
 
 class Screen(models.Model):
     advert = models.ForeignKey('advert.Advert', on_delete=models.CASCADE, related_name='screens')
-    name = models.CharField(verbose_name='Screen ID', max_length=50)
+    name = models.CharField(verbose_name='Screen ID', max_length=50, null=True, blank=True)
     title = models.CharField(verbose_name='title', max_length=255)
-    hfov = models.FloatField(verbose_name='hfov')
-    pitch = models.FloatField(verbose_name='pitch')
-    yaw = models.FloatField(verbose_name='yaw')
-    northOffset = models.PositiveSmallIntegerField(verbose_name='northOffset')
-    order = models.PositiveSmallIntegerField(verbose_name='Order')
+    hfov = models.FloatField(verbose_name='hfov', null=True, blank=True)
+    pitch = models.FloatField(verbose_name='pitch', null=True, blank=True)
+    yaw = models.FloatField(verbose_name='yaw', null=True, blank=True)
+    northOffset = models.PositiveSmallIntegerField(verbose_name='northOffset', null=True, blank=True)
+    order = models.PositiveSmallIntegerField(verbose_name='Order', null=True, blank=True)
     image = models.ImageField(upload_to='panorama-screens/')
 
     def __str__(self):
