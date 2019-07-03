@@ -44,6 +44,7 @@
             const button = document.createElement("button");
             button.className = 'btn btn-primary w-50 ml-auto mr-auto mt-4 d-block';
             button.type = "submit";
+            button.textContent = "Yükle";
             for (let i = 0; i < e.target.files.length; i++) {
                 const input = document.createElement("input");
                 const inputName = document.createElement("input");
@@ -51,7 +52,8 @@
                 const wrapper = document.createElement("div");
                 wrapper.className = 'form-group';
                 inputName.className = 'form-control';
-                button.textContent = "Yükle";
+                input.required = true;
+                inputName.required = true;
                 input.type = "file";
                 input.name = "image";
                 inputName.type = "text";
