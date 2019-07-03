@@ -7,3 +7,10 @@ def screen(request):
         'adverts': Advert.objects.all()
     }
     return render(request, 'screen.html', payload)
+
+
+def first_screen(request):
+    payload = {
+        'adverts': Advert.objects.all()
+    }
+    return render(request, 'first-screen.html', payload)

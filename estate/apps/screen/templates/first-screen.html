@@ -1,0 +1,101 @@
+{% extends 'base.html' %}{% load staticfiles %}
+{% block App %}
+    <div id="panorama"></div>
+{% endblock %}
+{% block Scripts %}
+    <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
+    <script type="text/javascript">
+        $.ajax({
+            url: '/api/advert/1/',
+            method: 'get',
+            success: function (res) {
+                const first = res.screens[0];
+                const viewer = pannellum.viewer('panorama', {
+                    "autoLoad": true,
+                    "showZoomCtrl": false,
+                    "showFullscreenCtrl": false,
+                    "preview": true,
+                    "default": {
+                        "firstScene": first.name,
+                        "sceneFadeDuration": 1000,
+                    },
+                    "scenes": {
+                        [first.name]: {
+                            "title": first.title,
+                            "hfov": first.hfov,
+                            "pitch": first.pitch,
+                            "yaw": first.yaw,
+                            "type": "equirectangular",
+                            "panorama": first.image,
+                            "hotSpots": []
+                        }
+                    }
+                });
+                const holdTrigger = $('.pnlm-dragfix');
+                let timeOutId = 0;
+
+                function mouseupListener(event) {
+                    const posPitch = viewer.mouseEventToCoords(event)[0];
+                    const posYaw = viewer.mouseEventToCoords(event)[1];
+                    alertify.confirm('Confirm Message', function () {
+                        simulateMouseClick(document.querySelector('*'));
+                        addHotSpot(posPitch, posYaw);
+                        alertify.success('Ok')
+                    }, function () {
+                        simulateMouseClick(document.querySelector('*'));
+                        alertify.error('Cancel')
+                    });
+
+
+                    const selectList = document.createElement("select");
+                    selectList.name = "screen";
+                    const div = document.createElement('div');
+                    const span = document.createElement('span');
+                    div.className = 'form-group';
+                    span.textContent = 'Screens : ';
+                    div.appendChild(span);
+                    div.appendChild(selectList);
+                    $('.alertify-message').after(div);
+
+                    for (let i = 0; i < res.screens.length; i++) {
+                        const option = document.createElement("option");
+                        option.value = (i + 1);
+                        option.text = res.screens[i].title;
+                        selectList.appendChild(option);
+                    }
+                }
+
+                function simulateMouseClick(targetNode) {
+                    function triggerMouseEvent(targetNode, eventType) {
+                        const clickEvent = document.createEvent('MouseEvents');
+                        clickEvent.initEvent(eventType, true, true);
+                        targetNode.dispatchEvent(clickEvent);
+                    }
+
+                    ["mouseover", "mousedown", "mouseup", "click"].forEach(function (eventType) {
+                        triggerMouseEvent(targetNode, eventType);
+                    });
+                }
+
+                function addHotSpot(posPitch, posYaw, title, sceneId) {
+                    viewer.addHotSpot({
+                        "pitch": posPitch,
+                        "yaw": posYaw,
+                        "type": "scene",
+                        "text": title,
+                        "sceneId": `${sceneId}`
+                    }, first.name)
+                }
+
+                holdTrigger.on('mousedown', function (e) {
+                    timeOutId = setTimeout(() => mouseupListener(e), 1000);
+                }).bind('mouseup mouseleave', () => {
+                    clearTimeout(timeOutId);
+                });
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    </script>
+{% endblock %}

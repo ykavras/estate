@@ -99,10 +99,14 @@ html, body {
   margin-bottom: 20px;
 }
 
-#screens-add{
+#screens-add {
   padding-top: 40px;
 }
 
 .preloader, .success-p, .alert-p {
   display: none;
+}
+
+.alertify {
+  background-color: wheat;
 }
