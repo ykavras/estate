@@ -1,18 +1,17 @@
 {% extends 'base.html' %}{% load staticfiles %}
 {% block App %}
     <div class="container">
-        <div class="upload-images">
-            <input type="file" multiple>
-            <p>Resimleri Seç</p>
-        </div>
         <form id="screens-add" enctype="multipart/form-data" method="post">
             {% csrf_token %}
-            <select name="advert">
+            <select name="advert" class="form-control">
                 {% for advert in adverts %}
                     <option value="{{ advert.pk }}">{{ advert.title }}</option>
                 {% endfor %}
-
             </select>
+            <div class="upload-images">
+                <input type="file" multiple>
+                <p>Resimleri Seç</p>
+            </div>
             <div id="elements"></div>
             <div class="preloader mb-3">
                 <div class="spinner-border m-auto d-block" role="status">
@@ -21,7 +20,6 @@
             </div>
             <p class="alert alert-success success-p">Tamamlandı.</p>
             <p class="alert alert-danger alert-p">Bir Problem Var.</p>
-            <button type="submit" class="btn btn-primary w-50 m-auto d-block">Yükle</button>
         </form>
     </div>
 {% endblock %}
@@ -43,6 +41,9 @@
         }
 
         document.querySelector("input[type=file]").onchange = function (e) {
+            const button = document.createElement("button");
+            button.className = 'btn btn-primary w-50 ml-auto mr-auto mt-4 d-block';
+            button.type = "submit";
             for (let i = 0; i < e.target.files.length; i++) {
                 const input = document.createElement("input");
                 const inputName = document.createElement("input");
@@ -50,6 +51,7 @@
                 const wrapper = document.createElement("div");
                 wrapper.className = 'form-group';
                 inputName.className = 'form-control';
+                button.textContent = "Yükle";
                 input.type = "file";
                 input.name = "image";
                 inputName.type = "text";
@@ -61,6 +63,7 @@
                 wrapper.appendChild(input);
                 wrapper.appendChild(inputName);
                 wrapper.appendChild(inputScreenId);
+                wrapper.appendChild(button);
                 document.getElementById('elements').appendChild(wrapper);
             }
         };
@@ -98,7 +101,7 @@
                         $('.success-p').show();
                     },
                     error: function (err) {
-                        console.log(err)
+                        console.log(err);
                         $('.alert-p').show();
                     }
                 })
