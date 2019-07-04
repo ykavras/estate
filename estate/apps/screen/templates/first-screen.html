@@ -6,154 +6,40 @@
 {% block Scripts %}
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
     <script type="text/javascript">
-        let currentScene = '';
-        let currentSceneOrder = 0;
-        $.ajax({
-            url: '/api/advert/1/',
-            method: 'get',
-            success: function (res) {
-                const first = res.screens[0];
+        let globalData = null;
 
-                const viewer = pannellum.viewer('panorama', {
-                    "autoLoad": true,
-                    "showZoomCtrl": false,
-                    "showFullscreenCtrl": false,
-                    "preview": true,
-                    "default": {
-                        "firstScene": first.name,
-                        "sceneFadeDuration": 1000,
-                    },
-                    "scenes": {
-                        [first.name]: {
-                            "title": first.title,
-                            "hfov": first.hfov,
-                            "pitch": first.pitch,
-                            "yaw": first.yaw,
-                            "type": "equirectangular",
-                            "panorama": first.image,
-                            "hotSpots": first.hotspots
-                        }
-                    }
-                });
+        $.get("/api/screen/", function (data, status) {
+            globalData = data;
+        });
 
-                currentScene = viewer.getScene();
-
-                console.log(currentScene)
-
-                viewer.on('scenechange', function (e) {
-                    console.log(e);
-                    currentScene = e;
-                });
-
-                $.ajax({
-                    url: '/api/screen/',
-                    method: 'get',
-                    success: function (res) {
-                        res.forEach(item => {
-                            viewer.addScene(item.name, {
-                                "title": item.title,
-                                "hfov": item.hfov,
-                                "pitch": item.pitch,
-                                "yaw": item.yaw,
-                                "type": "equirectangular",
-                                "panorama": item.image,
-                                "hotSpots": item.hotspots
-                            })
-                        });
-                        console.log(viewer.getConfig().scenes);
-                        const x = res.find(item => item.id === res.id);
-                        currentSceneOrder = x.order;
-
-                    }, error: function (err) {
-                        console.log(res)
-                    }
-                });
-
-                const holdTrigger = $('.pnlm-dragfix');
-                let timeOutId = 0;
-
-                function mouseupListener(event) {
-                    const posPitch = viewer.mouseEventToCoords(event)[0];
-                    const posYaw = viewer.mouseEventToCoords(event)[1];
-                    let result = '';
-
-                    alertify.confirm('Confirm Message', function () {
-                        simulateMouseClick(document.querySelector('*'));
-                        alertify.success('Ok');
-                        $.ajax({
-                            url: '/api/hotspot/',
-                            method: 'post',
-                            data: {
-                                pitch: posPitch,
-                                yaw: posYaw,
-                                text: $('input[name="text"]').val(),
-                                screenId: currentScene,
-                                url: $('input[name="url"]').val(),
-                                type: "scene",
-                                screen: currentSceneOrder,
-                                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                            },
-                            success: function (res) {
-                                console.log(res);
-                                addHotSpot(posPitch, posYaw, $('input[name="text"]').val(), $('#item-list li.active').data('screenid'));
-                            }, error: function (err) {
-                                console.log(err)
-                            }
-                        })
-                    }, function () {
-                        simulateMouseClick(document.querySelector('*'));
-                        alertify.error('Cancel');
-                    });
-
-                    res.screens.forEach(item => {
-                        if (currentScene !== item.name) {
-                            result += `<li data-screenid="${item.name}" data-name="${item.order}">${item.title}<div style="background-image:url(${item.image})"></div></li>`;
-                        }
-                    });
-
-                    $('.alertify-message').after(`
-                        <input name="text" class="form-control mt-3" placeholder="Başlık"/>
-                        <input name="url" class="form-control mt-3" type="url" placeholder="URL">
-                        <ul id="item-list">${result}</ul>
-                    `);
-
-                }
-
-                $(document).on('click', '#item-list li', function () {
-                    $('#item-list li').removeClass('active');
-                    $(this).addClass('active');
-                });
-
-                function simulateMouseClick(targetNode) {
-                    function triggerMouseEvent(targetNode, eventType) {
-                        const clickEvent = document.createEvent('MouseEvents');
-                        clickEvent.initEvent(eventType, true, true);
-                        targetNode.dispatchEvent(clickEvent);
-                    }
-
-                    ["mouseover", "mousedown", "mouseup", "click"].forEach(function (eventType) {
-                        triggerMouseEvent(targetNode, eventType);
-                    });
-                }
-
-                function addHotSpot(posPitch, posYaw, title, screenName) {
-                    viewer.addHotSpot({
-                        "pitch": posPitch,
-                        "yaw": posYaw,
-                        "type": "scene",
-                        "text": title,
-                        "sceneId": screenName
-                    }, currentSceneOrder)
-                }
-
-                holdTrigger.on('mousedown', function (e) {
-                    timeOutId = setTimeout(() => mouseupListener(e), 1000);
-                }).bind('mouseup mouseleave', () => {
-                    clearTimeout(timeOutId);
-                });
+        pannellum.viewer('panorama', {
+            "default": {
+                "autoLoad": true,
+                "firstScene": "{{ screens.0.name }}",
+                "sceneFadeDuration": 1000
             },
-            error: function (err) {
-                console.log(err)
+            "scenes": {
+                {% for screen in screens %}
+                    "{{ screen.name }}": {
+                        "title": "{{ screen.title }}",
+                        "hfov": {{ screen.hfov|floatformat }},
+                        "pitch": {{ screen.pitch|floatformat }},
+                        "yaw": {{ screen.yaw|floatformat }},
+                        "type": "equirectangular",
+                        "panorama": "{{ screen.image.url }}",
+                        "hotSpots": [
+                            {% for hotspot in screen.hotspots.all %}
+                                {
+                                    "pitch": {{ hotspot.pitch|floatformat }},
+                                    "yaw": {{ hotspot.yaw|floatformat }},
+                                    "type": "{{ hotspot.type }}",
+                                    "text": "{{ hotspot.text }}",
+                                    "sceneId": "{{ hotspot.screenId }}"
+                                },
+                            {% endfor %}
+                        ]
+                    },
+                {% endfor %}
             }
         });
     </script>

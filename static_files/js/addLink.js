@@ -45,7 +45,6 @@ function simulateMouseClick(targetNode) {
         clickEvent.initEvent(eventType, true, true);
         targetNode.dispatchEvent(clickEvent);
     }
-
     ["mouseover", "mousedown", "mouseup", "click"].forEach(function (eventType) {
         triggerMouseEvent(targetNode, eventType);
     });

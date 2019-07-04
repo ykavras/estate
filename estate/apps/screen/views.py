@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from estate.apps.advert.models import Advert
+from estate.apps.screen.models import Screen
 
 
 def screen(request):
@@ -11,6 +12,7 @@ def screen(request):
 
 def first_screen(request):
     payload = {
-        'adverts': Advert.objects.all()
+        'adverts': Advert.objects.all(),
+        'screens': Screen.objects.all()
     }
     return render(request, 'first-screen.html', payload)
