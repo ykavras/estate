@@ -76,9 +76,9 @@
                 {% for screen in screens %}
                     "{{ screen.name }}": {
                         "title": "{{ screen.title }}",
-                        "hfov": {{ screen.hfov|floatformat }},
-                        "pitch": {{ screen.pitch|floatformat }},
-                        "yaw": {{ screen.yaw|floatformat }},
+                        "hfov": {{ screen.hfov }},
+                        "pitch": {{ screen.pitch }},
+                        "yaw": {{ screen.yaw }},
                         "type": "equirectangular",
                         "panorama": "{{ screen.image.url }}",
                         "hotSpots": [
