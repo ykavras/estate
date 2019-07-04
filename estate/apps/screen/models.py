@@ -16,10 +16,10 @@ class Screen(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        super(Screen, self).save(*args, **kwargs)
         if not self.order:
             self.order = self.pk
-            return super().save(*args, **kwargs)
+            return self.save()
 
     def get_absolute_url(self):
         return ''
