@@ -61,6 +61,7 @@
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
     <script type="text/javascript">
         let globalData = null;
+        const toast = $('.toast');
 
         $.get("/api/screen/", function (data, status) {
             globalData = data;
@@ -69,6 +70,8 @@
         const viewer = pannellum.viewer('panorama', {
             "default": {
                 "autoLoad": true,
+                "showFullscreenCtrl": false,
+                "showControls": false,
                 "firstScene": "{{ screens.0.name }}",
                 "sceneFadeDuration": 1000
             },
@@ -118,7 +121,7 @@
                         hotSpotForm[0].reset();
                         hotSpotForm.hide();
                         addHotSpot(res.pitch, res.yaw, res.type, res.text, res.sceneId, res.name);
-                        $('.toast').addClass('fade show');
+                        toast.addClass('fade show');
                         $('.toast-body').text('Ekranlara gitmek için sayfayı yenilemeniz gerekmektedir.');
                     }, error: function (err) {
                         console.log(err);
@@ -157,9 +160,9 @@
             }, screenName)
         }
 
-        $('.toast').toast();
+        toast.toast();
         $('[data-dismiss="toast"]').on('click', function () {
-            $('.toast').removeClass('fade hide show');
+            toast.removeClass('fade hide show');
         });
     </script>
 {% endblock %}
