@@ -42,6 +42,20 @@
         <button class="btn btn-danger" type="submit">Vazgeç</button>
         <button class="btn btn-primary" type="submit">Kaydet</button>
     </form>
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg"
+                 preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                <rect fill="#007aff" width="100%" height="100%"></rect>
+            </svg>
+            <strong class="mr-auto">Bildirim</strong>
+            <small class="text-muted"></small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
 {% endblock %}
 {% block Scripts %}
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
@@ -104,7 +118,8 @@
                         hotSpotForm[0].reset();
                         hotSpotForm.hide();
                         addHotSpot(res.pitch, res.yaw, res.type, res.text, res.sceneId, res.name);
-                        window.location.reload();
+                        $('.toast').addClass('fade show');
+                        $('.toast-body').text('Ekranlara gitmek için sayfayı yenilemeniz gerekmektedir.');
                     }, error: function (err) {
                         console.log(err);
                     }
@@ -141,5 +156,10 @@
                 "sceneId": sceneId
             }, screenName)
         }
+
+        $('.toast').toast();
+        $('[data-dismiss="toast"]').on('click', function () {
+            $('.toast').removeClass('fade hide show');
+        });
     </script>
 {% endblock %}
