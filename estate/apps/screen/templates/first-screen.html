@@ -7,11 +7,13 @@
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
     <script type="text/javascript">
         let currentScene = '';
+        let currentSceneOrder = 0;
         $.ajax({
             url: '/api/advert/1/',
             method: 'get',
             success: function (res) {
                 const first = res.screens[0];
+
                 const viewer = pannellum.viewer('panorama', {
                     "autoLoad": true,
                     "showZoomCtrl": false,
@@ -33,9 +35,13 @@
                         }
                     }
                 });
+
                 currentScene = viewer.getScene();
 
+                console.log(currentScene)
+
                 viewer.on('scenechange', function (e) {
+                    console.log(e);
                     currentScene = e;
                 });
 
@@ -43,7 +49,7 @@
                     url: '/api/screen/',
                     method: 'get',
                     success: function (res) {
-                        res.slice(1).forEach(item => {
+                        res.forEach(item => {
                             viewer.addScene(item.name, {
                                 "title": item.title,
                                 "hfov": item.hfov,
@@ -54,7 +60,10 @@
                                 "hotSpots": item.hotspots
                             })
                         });
-                        console.log(viewer.getConfig().scenes)
+                        console.log(viewer.getConfig().scenes);
+                        const x = res.find(item => item.id === res.id);
+                        currentSceneOrder = x.order;
+
                     }, error: function (err) {
                         console.log(res)
                     }
@@ -78,10 +87,10 @@
                                 pitch: posPitch,
                                 yaw: posYaw,
                                 text: $('input[name="text"]').val(),
-                                screenid: $('#item-list li.active').data('screenid'),
+                                screenId: currentScene,
                                 url: $('input[name="url"]').val(),
                                 type: "scene",
-                                screen: $('#item-list li.active').data('name'),
+                                screen: currentSceneOrder,
                                 csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
                             },
                             success: function (res) {
@@ -134,7 +143,7 @@
                         "type": "scene",
                         "text": title,
                         "sceneId": screenName
-                    }, currentScene)
+                    }, currentSceneOrder)
                 }
 
                 holdTrigger.on('mousedown', function (e) {
