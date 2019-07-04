@@ -6,6 +6,7 @@
 {% block Scripts %}
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
     <script type="text/javascript">
+        let currentScene = '';
         $.ajax({
             url: '/api/advert/1/',
             method: 'get',
@@ -32,6 +33,11 @@
                         }
                     }
                 });
+                currentScene = viewer.getScene();
+
+                viewer.on('scenechange', function (e) {
+                    currentScene = e;
+                });
 
                 $.ajax({
                     url: '/api/screen/',
@@ -53,6 +59,7 @@
                         console.log(res)
                     }
                 });
+
                 const holdTrigger = $('.pnlm-dragfix');
                 let timeOutId = 0;
 
@@ -90,7 +97,7 @@
                     });
 
                     res.screens.forEach(item => {
-                        if (first.name !== item.name) {
+                        if (currentScene !== item.name) {
                             result += `<li data-screenid="${item.name}" data-name="${item.order}">${item.title}<div style="background-image:url(${item.image})"></div></li>`;
                         }
                     });
@@ -127,7 +134,7 @@
                         "type": "scene",
                         "text": title,
                         "sceneId": screenName
-                    }, screenName)
+                    }, currentScene)
                 }
 
                 holdTrigger.on('mousedown', function (e) {
