@@ -141,3 +141,19 @@ html, body {
     border-radius: 5px;
   }
 }
+
+#hotSpot-add {
+  display: none;
+  position: fixed;
+  width: 320px;
+  padding: 10px;
+  border-radius: 5px;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background-color: white;
+}

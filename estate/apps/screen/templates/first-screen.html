@@ -1,7 +1,47 @@
 {% extends 'base.html' %}{% load staticfiles %}
 {% block App %}
     <div id="panorama"></div>
-    {% csrf_token %}
+    <form id="hotSpot-add">
+        {% csrf_token %}
+        <p class="h3 text-center pb-2">HotSpot Ekle</p>
+        <div class="form-group">
+            <label class="pb-1"> Pitch </label>
+            <input class="form-control" type="text" name="pitch" placeholder="pitch" required/>
+        </div>
+        <div class="form-group">
+            <label class="pb-1"> Yaw </label>
+            <input class="form-control" type="text" name="yaw" placeholder="yaw" required/>
+        </div>
+        <div class="form-group">
+            <label class="pb-1"> Type </label>
+            <select name="type" class="form-control" required>
+                <option value="info">Info</option>
+                <option value="scene">Scene</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="pb-1"> Text </label>
+            <input class="form-control" type="text" name="text" placeholder="text" required/>
+        </div>
+        <div class="form-group">
+            <label class="pb-1"> Go to Screen </label>
+            <select name="screenId" class="form-control" required>
+                {% for screen in screens %}
+                    <option value="{{ screen.name }}">{{ screen.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="pb-1"> Save to Screen </label>
+            <select name="screen" class="form-control" required>
+                {% for screen in screens %}
+                    <option value="{{ screen.order }}">{{ screen.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn btn-danger" type="submit">Vazgeç</button>
+        <button class="btn btn-primary" type="submit">Kaydet</button>
+    </form>
 {% endblock %}
 {% block Scripts %}
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
@@ -12,7 +52,7 @@
             globalData = data;
         });
 
-        pannellum.viewer('panorama', {
+        const viewer = pannellum.viewer('panorama', {
             "default": {
                 "autoLoad": true,
                 "firstScene": "{{ screens.0.name }}",
@@ -30,7 +70,7 @@
                         "hotSpots": [
                             {% for hotspot in screen.hotspots.all %}
                                 {
-                                    "pitch": {{ hotspot.pitch|floatformat }},
+                                    "pitch": {{ hotspot.pitch }},
                                     "yaw": {{ hotspot.yaw|floatformat }},
                                     "type": "{{ hotspot.type }}",
                                     "text": "{{ hotspot.text }}",
@@ -41,6 +81,51 @@
                     },
                 {% endfor %}
             }
+        });
+
+        const holdTrigger = $('.pnlm-dragfix');
+        let timeOutId = 0;
+
+        function mouseupListener(event) {
+            const posPitch = viewer.mouseEventToCoords(event)[0];
+            const posYaw = viewer.mouseEventToCoords(event)[1];
+            $('#hotSpot-add').show();
+            $('input[name="pitch"]').val(posPitch);
+            $('input[name="yaw"]').val(posYaw);
+            $('#hotSpot-add').on('submit', function (e) {
+                e.preventDefault();
+                console.log($(this).serializeArray());
+                $.ajax({
+                    url: '/api/hotspot/',
+                    method: 'post',
+                    data: $(this).serializeArray(),
+                    success: function (res) {
+                        console.log(res);
+                    }, error: function (err) {
+                        console.log(err);
+                    }
+                })
+            });
+        }
+
+        function simulateMouseClick(targetNode) {
+            function triggerMouseEvent(targetNode, eventType) {
+                const clickEvent = document.createEvent('MouseEvents');
+                clickEvent.initEvent(eventType, true, true);
+                targetNode.dispatchEvent(clickEvent);
+            }
+
+            ["mouseover", "mousedown", "mouseup", "click"].forEach(function (eventType) {
+                triggerMouseEvent(targetNode, eventType);
+            });
+        }
+
+        simulateMouseClick(document.querySelector('*'));
+
+        holdTrigger.on('mousedown', function (e) {
+            timeOutId = setTimeout(() => mouseupListener(e), 1000);
+        }).bind('mouseup mouseleave', () => {
+            clearTimeout(timeOutId);
         });
     </script>
 {% endblock %}
