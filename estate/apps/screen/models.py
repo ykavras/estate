@@ -34,7 +34,7 @@ class HotSpot(models.Model):
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE, related_name='hotspots')
     pitch = models.FloatField()
     yaw = models.FloatField()
-    type = models.CharField(verbose_name='Types',max_length=5, choices=type_choices)
+    type = models.CharField(verbose_name='Types',max_length=5, choices=type_choices, null=True, blank=True,)
     text = models.CharField(max_length=255, null=True, blank=True, help_text='If type is info fill here')
     screenid = models.CharField(verbose_name='Screen Id', max_length=255, null=True, blank=True,
                                  help_text='If type is screen fill here')

@@ -110,3 +110,34 @@ html, body {
 .alertify {
   background-color: wheat;
 }
+
+#item-list {
+  height: 200px;
+  overflow: auto;
+  margin: 30px 0;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    margin: auto auto 20px;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover, &.active {
+      opacity: 0.4;
+    }
+  }
+
+  div {
+    width: 60px;
+    height: 40px;
+    margin-left: 10px;
+    background: transparent no-repeat center;
+    -webkit-background-size: cover;
+    background-size: cover;
+    border-radius: 5px;
+  }
+}

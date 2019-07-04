@@ -1,6 +1,7 @@
 {% extends 'base.html' %}{% load staticfiles %}
 {% block App %}
     <div id="panorama"></div>
+    {% csrf_token %}
 {% endblock %}
 {% block Scripts %}
     <script type="text/javascript" src="{% static 'alertify/src/alertify.js' %}"></script>
@@ -27,8 +28,29 @@
                             "yaw": first.yaw,
                             "type": "equirectangular",
                             "panorama": first.image,
-                            "hotSpots": []
+                            "hotSpots": first.hotspots
                         }
+                    }
+                });
+
+                $.ajax({
+                    url: '/api/screen/',
+                    method: 'get',
+                    success: function (res) {
+                        res.slice(1).forEach(item => {
+                            viewer.addScene(item.name, {
+                                "title": item.title,
+                                "hfov": item.hfov,
+                                "pitch": item.pitch,
+                                "yaw": item.yaw,
+                                "type": "equirectangular",
+                                "panorama": item.image,
+                                "hotSpots": item.hotspots
+                            })
+                        });
+                        console.log(viewer.getConfig().scenes)
+                    }, error: function (err) {
+                        console.log(res)
                     }
                 });
                 const holdTrigger = $('.pnlm-dragfix');
@@ -37,33 +59,54 @@
                 function mouseupListener(event) {
                     const posPitch = viewer.mouseEventToCoords(event)[0];
                     const posYaw = viewer.mouseEventToCoords(event)[1];
+                    let result = '';
+
                     alertify.confirm('Confirm Message', function () {
                         simulateMouseClick(document.querySelector('*'));
-                        addHotSpot(posPitch, posYaw);
-                        alertify.success('Ok')
+                        alertify.success('Ok');
+                        $.ajax({
+                            url: '/api/hotspot/',
+                            method: 'post',
+                            data: {
+                                pitch: posPitch,
+                                yaw: posYaw,
+                                text: $('input[name="text"]').val(),
+                                screenid: $('#item-list li.active').data('screenid'),
+                                url: $('input[name="url"]').val(),
+                                type: "scene",
+                                screen: $('#item-list li.active').data('name'),
+                                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            },
+                            success: function (res) {
+                                console.log(res);
+                                addHotSpot(posPitch, posYaw, $('input[name="text"]').val(), $('#item-list li.active').data('screenid'));
+                            }, error: function (err) {
+                                console.log(err)
+                            }
+                        })
                     }, function () {
                         simulateMouseClick(document.querySelector('*'));
-                        alertify.error('Cancel')
+                        alertify.error('Cancel');
                     });
 
+                    res.screens.forEach(item => {
+                        if (first.name !== item.name) {
+                            result += `<li data-screenid="${item.name}" data-name="${item.order}">${item.title}<div style="background-image:url(${item.image})"></div></li>`;
+                        }
+                    });
 
-                    const selectList = document.createElement("select");
-                    selectList.name = "screen";
-                    const div = document.createElement('div');
-                    const span = document.createElement('span');
-                    div.className = 'form-group';
-                    span.textContent = 'Screens : ';
-                    div.appendChild(span);
-                    div.appendChild(selectList);
-                    $('.alertify-message').after(div);
+                    $('.alertify-message').after(`
+                        <input name="text" class="form-control mt-3" placeholder="Başlık"/>
+                        <input name="url" class="form-control mt-3" type="url" placeholder="URL">
+                        <ul id="item-list">${result}</ul>
+                    `);
 
-                    for (let i = 0; i < res.screens.length; i++) {
-                        const option = document.createElement("option");
-                        option.value = (i + 1);
-                        option.text = res.screens[i].title;
-                        selectList.appendChild(option);
-                    }
                 }
+
+                $(document).on('click', '#item-list li', function () {
+                    $('#item-list li').removeClass('active');
+                    $(this).addClass('active');
+                });
 
                 function simulateMouseClick(targetNode) {
                     function triggerMouseEvent(targetNode, eventType) {
@@ -77,14 +120,14 @@
                     });
                 }
 
-                function addHotSpot(posPitch, posYaw, title, sceneId) {
+                function addHotSpot(posPitch, posYaw, title, screenName) {
                     viewer.addHotSpot({
                         "pitch": posPitch,
                         "yaw": posYaw,
                         "type": "scene",
                         "text": title,
-                        "sceneId": `${sceneId}`
-                    }, first.name)
+                        "sceneId": screenName
+                    }, screenName)
                 }
 
                 holdTrigger.on('mousedown', function (e) {
