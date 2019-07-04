@@ -71,7 +71,7 @@
                             {% for hotspot in screen.hotspots.all %}
                                 {
                                     "pitch": {{ hotspot.pitch }},
-                                    "yaw": {{ hotspot.yaw|floatformat }},
+                                    "yaw": {{ hotspot.yaw }},
                                     "type": "{{ hotspot.type }}",
                                     "text": "{{ hotspot.text }}",
                                     "sceneId": "{{ hotspot.screenId }}"
@@ -89,18 +89,22 @@
         function mouseupListener(event) {
             const posPitch = viewer.mouseEventToCoords(event)[0];
             const posYaw = viewer.mouseEventToCoords(event)[1];
-            $('#hotSpot-add').show();
+            const hotSpotForm = $('#hotSpot-add');
+            hotSpotForm.show();
             $('input[name="pitch"]').val(posPitch);
             $('input[name="yaw"]').val(posYaw);
-            $('#hotSpot-add').on('submit', function (e) {
+            hotSpotForm.on('submit', function (e) {
                 e.preventDefault();
-                console.log($(this).serializeArray());
                 $.ajax({
                     url: '/api/hotspot/',
                     method: 'post',
                     data: $(this).serializeArray(),
                     success: function (res) {
                         console.log(res);
+                        hotSpotForm[0].reset();
+                        hotSpotForm.hide();
+                        addHotSpot(res.pitch, res.yaw, res.type, res.text, res.sceneId, res.name);
+                        window.location.reload();
                     }, error: function (err) {
                         console.log(err);
                     }
@@ -127,5 +131,15 @@
         }).bind('mouseup mouseleave', () => {
             clearTimeout(timeOutId);
         });
+
+        function addHotSpot(pitch, yaw, type, text, sceneId, screenName) {
+            viewer.addHotSpot({
+                "pitch": pitch,
+                "yaw": yaw,
+                "type": type,
+                "text": text,
+                "sceneId": sceneId
+            }, screenName)
+        }
     </script>
 {% endblock %}
