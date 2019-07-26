@@ -1,5 +1,4 @@
 from rest_framework import serializers, viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from estate.apps.screen.models import Screen, HotSpot
 
@@ -29,13 +28,11 @@ class ScreenSerializer(serializers.ModelSerializer):
         )
 
 
-class ScreenViewSet(viewsets.ModelViewSet):
+class ScreenViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScreenSerializer
     queryset = Screen.objects.all()
-    permission_classes = (IsAuthenticated,)
 
 
-class HotSpotViewSet(viewsets.ModelViewSet):
+class HotSpotViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = HotSpot.objects.all()
     serializer_class = HotSpotSerializer
-    permission_classes = [IsAuthenticated]
