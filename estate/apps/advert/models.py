@@ -34,6 +34,19 @@ class HeatType(models.Model):
         verbose_name_plural = 'Isıtma Tipleri'
 
 
+class Project(models.Model):
+    name = models.CharField(verbose_name='Adı', max_length=255)
+    main_image = models.ImageField(verbose_name='Resim', upload_to='projects/main_image/')
+    description = models.TextField(verbose_name='Açıklama')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Proje'
+        verbose_name_plural = 'Projeler'
+
+
 class PropertyTitle(models.Model):
     title = models.CharField(max_length=255, verbose_name='Başlık', help_text='örnek: Cephe, Ulaşım')
 
@@ -60,6 +73,8 @@ class Property(models.Model):
 
 class Advert(models.Model):
     title = models.CharField(max_length=255, verbose_name='Başlık')
+    image_detail = models.ImageField(verbose_name='Detay Sayfası İçin Resim', upload_to='advert/galeri/')
+    image_list = models.ImageField(verbose_name='Listeleme Sayfası İçin Resim', upload_to='advert/galeri/')
     published_date = models.DateTimeField(verbose_name='Yayınlanma Tarihi')
     price = models.PositiveSmallIntegerField(verbose_name='Ücret')
     type = models.ForeignKey(Type, verbose_name='Tipi', on_delete=models.PROTECT, related_name='adverts')
@@ -71,6 +86,8 @@ class Advert(models.Model):
     is_furniture = models.BooleanField(verbose_name='Eşyalı')
     status = models.CharField(max_length=255, verbose_name='Kullanım Durumu')
     in_site = models.BooleanField(verbose_name='Site İçerisinde')
+    project = models.ForeignKey(Project, verbose_name='Proje', on_delete=models.PROTECT, related_name='adverts',
+                                null=True, blank=True)
     dues = models.PositiveSmallIntegerField(verbose_name='Aidat', null=True, blank=True)
     apartment_age = models.PositiveSmallIntegerField(verbose_name='Apartman Yaşı')
     content = models.TextField(verbose_name='Açıklama')
@@ -85,3 +102,15 @@ class Advert(models.Model):
     class Meta:
         verbose_name = 'İlan'
         verbose_name_plural = 'İlanlar'
+
+
+class AdvertImage(models.Model):
+    advert = models.ForeignKey(Advert, verbose_name='İlan', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(verbose_name='Resim', upload_to='advert/galeri/')
+
+    def __str__(self):
+        return f'{self.id} {self.advert.title}'
+
+    class Meta:
+        verbose_name = 'Galeri'
+        verbose_name_plural = 'Galeri'
