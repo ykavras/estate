@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+import django_filters.rest_framework
 
 from estate.apps.advert.models import Advert, Property, PropertyTitle
 
@@ -33,3 +34,4 @@ class AdvertSerializer(serializers.ModelSerializer):
 class AdvertViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Advert.objects.all()
     serializer_class = AdvertSerializer
+    filterset_fields = ('type',)

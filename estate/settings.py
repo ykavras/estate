@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'estate.apps.screen',
 
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
