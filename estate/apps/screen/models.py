@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import reverse
 
 
 class Screen(models.Model):
@@ -22,7 +23,7 @@ class Screen(models.Model):
             return self.save()
 
     def get_absolute_url(self):
-        return ''
+        return reverse('reverse:reverse', args=self.pk)
 
     class Meta:
         verbose_name = 'Screen'

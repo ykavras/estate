@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'', include('estate.apps.screen.urls', namespace='screen')),
+    path(r'screen/', include('estate.apps.screen.urls', namespace='screen')),
     path(r'api/', include('estate.api.urls', namespace='api')),
     path(r'api-auth/', include('rest_framework.urls')),
 ]
