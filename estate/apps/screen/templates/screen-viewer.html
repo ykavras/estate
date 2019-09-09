@@ -76,22 +76,41 @@
                 "sceneFadeDuration": 1000
             },
             "scenes": {
-                {% for screen in screen.advert.screens.all %}
-                    "{{ screen.name }}": {
-                        "title": "{{ screen.title }}",
-                        "hfov": {{ screen.hfov }},
-                        "pitch": {{ screen.pitch }},
-                        "yaw": {{ screen.yaw }},
+                "{{ screen.name }}": {
+                    "title": "{{ screen.title }}",
+                    "hfov": {{ screen.hfov }},
+                    "pitch": {{ screen.pitch }},
+                    "yaw": {{ screen.yaw }},
+                    "type": "equirectangular",
+                    "panorama": "{{ screen.image.url }}",
+                    "hotSpots": [
+                        {% for hotspot in screen.hotspots.all %}
+                            {
+                                "pitch": {{ hotspot.pitch }},
+                                "yaw": {{ hotspot.yaw }},
+                                "type": "{{ hotspot.type }}",
+                                "text": "{{ hotspot.text }}",
+                                "sceneId": "{{ hotspot.costum_screen_id }}"
+                            },
+                        {% endfor %}
+                    ]
+                },
+                {% for htspt in screen.scene_hotspots.all %}
+                    "{{ htspt.costum_screen_id }}": {
+                        "title": "{{ htspt.target_screen.title }}",
+                        "hfov": {{ htspt.target_screen.hfov }},
+                        "pitch": {{ htspt.target_screen.pitch }},
+                        "yaw": {{ htspt.target_screen.yaw }},
                         "type": "equirectangular",
-                        "panorama": "{{ screen.image.url }}",
+                        "panorama": "{{ htspt.target_screen.image.url }}",
                         "hotSpots": [
-                            {% for hotspot in screen.hotspots.all %}
+                            {% for hotspot in htspt.target_screen.hotspots.all %}
                                 {
                                     "pitch": {{ hotspot.pitch }},
                                     "yaw": {{ hotspot.yaw }},
                                     "type": "{{ hotspot.type }}",
                                     "text": "{{ hotspot.text }}",
-                                    "sceneId": "{{ hotspot.screenId }}"
+                                    "sceneId": "{{ hotspot.costum_screen_id }}"
                                 },
                             {% endfor %}
                         ]
